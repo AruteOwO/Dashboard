@@ -1,16 +1,9 @@
-import { initCarousel, addDot } from './features/carousel.js';
+import { initCarousel, renderPages } from './features/carousel.js';
+import { setupEditor } from './features/editor.js';
+import { pageData } from './data/pages.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const app = document.getElementById('app');
-    app.innerHTML = ''; 
-    
     initCarousel('app');
-
-    for(let i = 0; i < 3; i++) {
-        const page = document.createElement('div');
-        page.className = 'page';
-        // Removed page numbering here
-        app.appendChild(page);
-        addDot(i, 'app');
-    }
+    renderPages(pageData, 'app', false);
+    setupEditor(pageData, 'app');
 });

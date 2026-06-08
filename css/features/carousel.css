@@ -1,17 +1,20 @@
+/* --- Layout & Scroll Container --- */
+#app {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
 .page {
     flex: 0 0 100vw;
     height: 100vh;
     scroll-snap-align: start;
-    position: relative;
-    background-color: #121212; /* Matches your theme */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    /* Border removed */
-    border: none;
 }
 
+/* --- Navigation Bar --- */
 #nav-dots {
     position: fixed;
     bottom: 20px;
@@ -19,7 +22,13 @@
     transform: translateX(-50%);
     display: flex;
     gap: 10px;
-    z-index: 100;
+    z-index: 1000;
+    align-items: center;
+}
+
+.dot-wrapper {
+    position: relative;
+    padding-top: 25px;
 }
 
 .dot {
@@ -28,9 +37,42 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.3);
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.2s;
 }
 
 .dot.active {
-    background: #bb86fc;
+    background: var(--accent);
+}
+
+/* --- Edit Mode Controls --- */
+.del-btn {
+    position: absolute;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    background: #cf6679;
+    color: white;
+    cursor: pointer;
+    font-size: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.dot-wrapper:hover .del-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.add-page-btn {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    cursor: pointer;
 }
