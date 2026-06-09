@@ -1,4 +1,5 @@
 import { renderPages, setScrollNavigation, scrollNavigationEnabled } from './carousel.js';
+import { savePagesData } from '../utils/storage.js';
 
 export function setupEditor(pagesArray, containerId) {
     let isEditMode = false;
@@ -8,6 +9,11 @@ export function setupEditor(pagesArray, containerId) {
     btn.id = 'toggle-editor';
     btn.textContent = '⚙️';
     document.body.appendChild(btn);
+
+    const saveAndRender = () => {
+        savePagesData(pagesArray);
+        renderPages(pagesArray, containerId, true);
+    };
 
     const showGlobalSettings = () => {
         const overlay = document.createElement('div');
@@ -34,8 +40,6 @@ export function setupEditor(pagesArray, containerId) {
         const container = document.getElementById(containerId);
         const idx = Math.round(container.scrollLeft / window.innerWidth);
         const p = pagesArray[idx];
-        
-        // Check state to maintain "Selected" feedback after re-rendering
         const fileStatus = p.background.startsWith('data:') ? 'Selected: Local Image' : '';
 
         sidebar.innerHTML = `
@@ -57,17 +61,16 @@ export function setupEditor(pagesArray, containerId) {
             </div>
         `;
 
-        // Event Listeners
-        sidebar.querySelector('.accent-input').oninput = (e) => { p.accent = e.target.value; renderPages(pagesArray, containerId, true); };
-        sidebar.querySelector('.bg-input').oninput = (e) => { p.background = e.target.value; renderPages(pagesArray, containerId, true); };
-        sidebar.querySelector('.bg-url-input').onchange = (e) => { p.background = e.target.value; renderPages(pagesArray, containerId, true); };
+        sidebar.querySelector('.accent-input').oninput = (e) => { p.accent = e.target.value; saveAndRender(); };
+        sidebar.querySelector('.bg-input').oninput = (e) => { p.background = e.target.value; saveAndRender(); };
+        sidebar.querySelector('.bg-url-input').onchange = (e) => { p.background = e.target.value; saveAndRender(); };
         
         sidebar.querySelector('.file-input').onchange = (e) => {
             const file = e.target.files[0];
             if (file) {
                 sidebar.querySelector('#file-name').textContent = `Selected: ${file.name}`;
                 const reader = new FileReader();
-                reader.onload = (ev) => { p.background = ev.target.result; renderPages(pagesArray, containerId, true); };
+                reader.onload = (ev) => { p.background = ev.target.result; saveAndRender(); };
                 reader.readAsDataURL(file);
             }
         };
@@ -75,7 +78,7 @@ export function setupEditor(pagesArray, containerId) {
         sidebar.querySelector('.remove-btn').onclick = () => {
             p.background = '#121212';
             sidebar.querySelector('#file-name').textContent = '';
-            renderPages(pagesArray, containerId, true);
+            saveAndRender();
         };
         
         sidebar.querySelector('#global-btn').onclick = showGlobalSettings;
